@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>Cloud Play X</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#080d18;color:#f4f7ff;font-family:Arial,sans-serif}
+header{padding:21px 18px 17px;background:linear-gradient(130deg,#13264b,#11172c 60%,#241344);border-bottom:1px solid #ffffff18}
+.logo{font-size:22px;font-weight:900;letter-spacing:1.5px}.logo span{color:#62d9ff}.sub{font-size:12px;color:#a9b8d4;margin-top:6px}
+main{padding:18px;max-width:760px;margin:auto}.status{display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:12px;background:#2a2020;border:1px solid #704343;color:#ffb5a8;font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;background:#ff806d}.section{font-size:15px;font-weight:800;margin:18px 0 12px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:13px}.card{background:#131c2e;border:1px solid #ffffff17;border-radius:17px;overflow:hidden}
+.art{height:145px;display:flex;align-items:end;padding:12px;position:relative;background-size:cover;background-position:center}.art:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#090e1c,transparent 85%)}
+.art b{position:relative;z-index:1;font-size:14px;text-shadow:0 2px 5px #000}.wukong{background-image:linear-gradient(135deg,#684026,#161322 60%,#b2763c)}.gta{background-image:linear-gradient(135deg,#426f88,#192b43 55%,#b58b54)}
+.gameinfo{padding:11px}.tag{font-size:10px;color:#8fa8d0;margin-bottom:9px}.play,.primary{width:100%;border:0;border-radius:10px;padding:11px;background:linear-gradient(90deg,#277edb,#7555db);color:white;font-weight:800;font-size:12px}
+.panel{margin-top:16px;padding:15px;background:#121b2b;border:1px solid #ffffff18;border-radius:15px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;color:#b8c5dc;padding:9px 0}
+.value{color:#f5f7ff;font-weight:700}select,input{max-width:58%;background:#202d45;color:white;border:1px solid #52617c;border-radius:8px;padding:8px}
+input{width:58%}.small{font-size:11px;color:#91a0ba;line-height:1.5;margin-top:10px}
+#connect{margin-top:12px}#result{font-size:11px;color:#a9b8d4;margin-top:10px;line-height:1.5}
+footer{text-align:center;color:#64738f;font-size:10px;padding:24px}
+#modal{display:none;position:fixed;inset:0;background:#000b;align-items:center;justify-content:center;padding:22px}
+.dialog{max-width:340px;width:100%;padding:20px;border-radius:18px;background:#17233a;border:1px solid #ffffff30}.dialog h3{margin:0 0 9px}.dialog p{font-size:13px;line-height:1.5;color:#c0cce0}.dialog button{background:#367fe0;border:0;color:white;border-radius:9px;padding:11px 18px;font-weight:bold}
+@media(max-width:360px){.art{height:120px}.gameinfo{padding:9px}}
+</style></head>
+<body>
+<header><div class="logo">CLOUD <span>PLAY</span> X</div><div class="sub">Your game library · Cloud connection demo</div></header>
+<main>
+ <div class="section">Server connection</div>
+ <div class="status"><i class="dot"></i><strong id="state">NOT CONNECTED</strong><span>· Demo mode</span></div>
+ <div class="panel">
+  <div class="row"><span>Server provider</span><select id="provider"><option value="manual">My cloud PC / server</option><option value="parsec">Parsec-compatible host</option><option value="sunshine">Sunshine + Moonlight host</option></select></div>
+  <div class="row"><label for="host">Server address</label><input id="host" placeholder="Host address (if you have one)"></div>
+  <div class="row"><label for="port">Port</label><input id="port" placeholder="Port (optional)" inputmode="numeric"></div>
+  <button class="primary" id="connect">CHECK CONNECTION</button>
+  <div id="result">No server address entered. This screen does not connect to a server by itself.</div>
+  <div class="small">Safety: only enter a server address supplied by a provider or a device you own. Never enter your password, payment details, or private access token into this demo.</div>
+ </div>
+ <div class="section">Game library</div>
+ <div class="cards">
+  <article class="card"><div class="art wukong"><b>BLACK MYTH: WUKONG</b></div><div class="gameinfo"><div class="tag">ACTION RPG · PC GAME</div><button class="play" onclick="choose('Black Myth: Wukong')">SELECT GAME</button></div></article>
+  <article class="card"><div class="art gta"><b>GRAND THEFT AUTO V</b></div><div class="gameinfo"><div class="tag">OPEN WORLD · PC GAME</div><button class="play" onclick="choose('Grand Theft Auto V')">SELECT GAME</button></div></article>
+ </div>
+ <div class="panel"><div class="section" style="margin-top:0">Streaming preferences</div>
+  <div class="row"><span>Quality</span><select><option>Balanced</option><option>720p</option><option>1080p</option></select></div>
+  <div class="row"><span>Frame rate target</span><select><option>30 FPS</option><option>60 FPS</option></select></div>
+  <div class="small">This is a front-end demo. Actual gameplay requires a running, compatible cloud gaming PC/server, streaming software, stable internet, and valid access to each game. A connection check here cannot verify or launch a remote game stream.</div>
+ </div>
+</main>
+<footer>CLOUD PLAY X · SERVER SETUP DEMO</footer>
+<div id="modal"><div class="dialog"><h3 id="mt">Game selected</h3><p id="mb"></p><button onclick="document.getElementById('modal').style.display='none'">OK</button></div></div>
+<script>
+const state=document.getElementById('state'),result=document.getElementById('result');
+document.getElementById('connect').addEventListener('click',()=>{
+ const host=document.getElementById('host').value.trim();
+ const port=document.getElementById('port').value.trim();
+ if(!host){state.textContent='NOT CONNECTED';result.textContent='Enter the server address provided by your cloud host. No server has been contacted.';return}
+ state.textContent='DETAILS ENTERED · NOT VERIFIED';
+ result.textContent='Address entered'+(port?' with port '+port:'')+'. This demo has no backend network connection, so it cannot test or connect to this server yet.';
+});
+function choose(game){
+ document.getElementById('mt').textContent=game;
+ document.getElementById('mb').textContent='Game selected in the library. To play, connect a compatible cloud gaming host that has this game installed and licensed. This demo does not include the game or a streaming server.';
+ document.getElementById('modal').style.display='flex';
+}
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')e.currentTarget.style.display='none'});
+</script></body></html>
